@@ -86,30 +86,3 @@ public class DailyScheduleRepositoryTest
         Assert.Empty(result);
     }
 }
-
-/*
-public IList<Driver> GetDriversByPeriod(DateTime start, DateTime end);
-    public Dictionary<string, TimeSpan> GetTotalTimeByTypeAndModel();
-    public IList<Tuple<string, int>> GetTop5DriversByRides();
-    public IList<DriverRideInfo> GetDriversRidesInfo();
-    public IList<Vehicle> GetVehiclesWithMaxRides(DateTime start, DateTime end);  
-  [Fact]
-    public void GetFullInfo_Success()
-    {
-        // наверное нужно было не строку возвращать, иначе это бред какой-то.
-
-        var expected =
-            "ID: 2\r\n" +
-            "Гос. номер: A123AA63\r\n" +
-            "Тип транспорта: Троллейбус\r\n" +
-            "Год выпуска: 2022\r\n" +
-            "Модель\r\n" +
-            "Название: Адмирал 2022\r\n" +
-            "Низкопольный: да\r\n" +
-            "Вместимость: 100 чел.\r\n";
-        var repo = new VehicleInMemoryRepository();
-        var result = repo.GetFullInfo(2);
-        Assert.Equal(expected, result);
-    }
- 
- */

@@ -18,6 +18,5 @@ public class DailySchedule
     public string? Route { get; set; }
     public DateTime? StartTime { get; set; }
     public DateTime? EndTime { get; set; }
-    //мб пригодится
-    //public DateOnly? Date {  get; set; }
+
 }
