@@ -66,22 +66,22 @@ public class VehicleInMemoryRepository : IVehicleRepository
         if (v != null)
         {
             var info = new StringBuilder();
-            info.AppendLine($"ID: {v.Id}");
-            info.AppendLine($"Гос. номер: {v.LicensePlate ?? "не указан"}");
-            info.AppendLine($"Тип транспорта: {v.GetVehicleTypeName()}");
-            info.AppendLine($"Год выпуска: {v.YearOfManufacture?.ToString() ?? "не указан"}");
+            info.Append($"ID: {v.Id}{Environment.NewLine}");
+            info.Append($"Гос. номер: {v.LicensePlate ?? "не указан"}{Environment.NewLine}");
+            info.Append($"Тип транспорта: {v.GetVehicleTypeName()}{Environment.NewLine}");
+            info.Append($"Год выпуска: {v.YearOfManufacture?.ToString() ?? "не указан"}{Environment.NewLine}");
             var vModel = _vehicleModels.FirstOrDefault(m => m.Id == v.VehicleModelId);
             if (vModel != null)
             {
-                
-                info.AppendLine("Модель");
-                info.AppendLine($"Название: {vModel.ModelName}");
-                info.AppendLine($"Низкопольный: {(vModel.IsLowFloor ? "да" : "нет")}");
-                info.AppendLine($"Вместимость: {vModel.MaxCapacity} чел.");
+
+                info.Append($"Модель{Environment.NewLine}");
+                info.Append($"Название: {vModel.ModelName}{Environment.NewLine}");
+                info.Append($"Низкопольный: {(vModel.IsLowFloor ? "да" : "нет")}{Environment.NewLine}");
+                info.Append($"Вместимость: {vModel.MaxCapacity} чел.{Environment.NewLine}");
             }
             else
             {
-                info.AppendLine("Информация о модели отсутствует");
+                info.Append($"Информация о модели отсутствует{Environment.NewLine}");
             }
             return info.ToString();
         }
