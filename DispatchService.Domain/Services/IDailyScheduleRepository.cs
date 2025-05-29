@@ -15,9 +15,9 @@ public class DriverRideInfo
 }
 public interface IDailyScheduleRepository : IRepository<DailySchedule, int>
 {
-    public IList<Driver> GetDriversByPeriod(DateTime start, DateTime end);
-    public Dictionary<string, TimeSpan> GetTotalTimeByTypeAndModel();
-    public IList<Tuple<string, int>> GetTop5DriversByRides();
-    public IList<DriverRideInfo> GetDriversRidesInfo();
-    public IList<Vehicle> GetVehiclesWithMaxRides(DateTime start, DateTime end);
+    public Task<IList<Driver>> GetDriversByPeriod(DateTime start, DateTime end);
+    public Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel();
+    public Task<IList<Tuple<string, int>>> GetTop5DriversByRides();
+    public Task<IList<DriverRideInfo>> GetDriversRidesInfo();
+    public Task<IList<Vehicle>> GetVehiclesWithMaxRides(DateTime start, DateTime end);
 }

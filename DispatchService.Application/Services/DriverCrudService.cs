@@ -12,29 +12,28 @@ using System.Threading.Tasks;
 namespace DispatchService.Application.Services;
 public class DriverCrudService(IRepository<Driver, int> repository, IMapper mapper) : ICrudService<DriverDto, DriverCreateUpdateDto, int>
 {
-    public bool Create(DriverCreateUpdateDto newDto)
+    public async Task<DriverDto> Create(DriverCreateUpdateDto newDto)
     {
         var newDriver = mapper.Map<Driver>(newDto);
-        newDriver.Id = repository.GetAll().Max(x => x.Id) + 1;
-        var result = repository.Add(newDriver);
-        return result;
+        newDriver.Id = (await repository.GetAll()).Max(x => x.Id) + 1;
+        var res = await repository.Add(newDriver);
+        return mapper.Map<DriverDto>(res);
     }
 
-    public bool Delete(int id) => repository.Delete(id);
-    public DriverDto? GetById(int id)
+    public async Task<bool> Delete(int id) => await repository.Delete(id);
+    public async Task<DriverDto?> GetById(int id)
     {
-        var driver = repository.Get(id);
+        var driver = await repository.Get(id);
         return mapper.Map<DriverDto>(driver);
     }
 
-    public IList<DriverDto> GetList() => mapper.Map<List<DriverDto>>(repository.GetAll());
+    public async Task<IList<DriverDto>> GetList() => mapper.Map<List<DriverDto>>(await repository.GetAll());
 
-    public bool Update(int key, DriverCreateUpdateDto newDto)
+    public async Task<DriverDto> Update(int key, DriverCreateUpdateDto newDto)
     {
-        var oldDriver = repository.Get(key);
+        
         var newDriver = mapper.Map<Driver>(newDto);
-        newDriver.Id = key;
-        var result = repository.Update(newDriver);
-        return result;
+        await repository.Update(newDriver);
+        return mapper.Map<DriverDto>(newDriver);
     }
 }

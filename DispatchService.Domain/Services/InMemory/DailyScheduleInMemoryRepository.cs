@@ -26,7 +26,7 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             ds.Vehicle = _vehicles.FirstOrDefault(a => a.Id == ds.VehicleId);
         }
     }
-    public bool Add(DailySchedule entity)
+    public Task<DailySchedule> Add(DailySchedule entity)
     {
         try
         {
@@ -34,15 +34,15 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return Task.FromResult(entity);
     }
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var dailySchedule = Get(key);
+            var dailySchedule = await Get(key);
             if (dailySchedule != null)
             {
                 _dailySchedules.Remove(dailySchedule);
@@ -54,24 +54,24 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         }
         return true;
     }
-    public bool Update(DailySchedule entity)
+    public async Task<DailySchedule> Update(DailySchedule entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return entity;
     }
-    public DailySchedule? Get(int key) => _dailySchedules.FirstOrDefault(d => d.Id == key);
-    public IList<DailySchedule> GetAll() => _dailySchedules;
-    public IList<Driver> GetDriversByPeriod(DateTime start, DateTime end)
+    public Task<DailySchedule?> Get(int key) => Task.FromResult(_dailySchedules.FirstOrDefault(d => d.Id == key));
+    public Task<IList<DailySchedule>> GetAll() => Task.FromResult((IList<DailySchedule>)_dailySchedules);
+    public Task<IList<Driver>> GetDriversByPeriod(DateTime start, DateTime end)
     {
-        return _dailySchedules
+        var result = _dailySchedules
             .Where(ds =>
                 ds.StartTime != null &&
                 ds.EndTime != null &&
@@ -82,8 +82,9 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .DistinctBy(d => d.Id)  
             .OrderBy(d => d.FullName)
             .ToList();
+        return Task.FromResult<IList<Driver>>(result);
     }
-    public Dictionary<string, TimeSpan> GetTotalTimeByTypeAndModel()
+    public Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel()
     {
         var totalTime = new Dictionary<string, TimeSpan>();
         foreach (var schedule in _dailySchedules)
@@ -107,10 +108,10 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
                 totalTime[key] = duration;
             }
         }
-        return totalTime;
+        return Task.FromResult(totalTime);
 
     }
-    public IList<Tuple<string, int>> GetTop5DriversByRides()
+    public Task<IList<Tuple<string, int>>> GetTop5DriversByRides()
     {
         var driverRideCounts = _dailySchedules
             .Where(ds => ds.Driver != null)
@@ -130,22 +131,17 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .ToList();
 
         
-        var result = new List<Tuple<string, int>>();
+        var result = topDrivers
+            .Select(d => Tuple.Create(d.Driver.FullName, d.RideCount))
+            .ToList();
 
-        foreach (var driverInfo in topDrivers)
-        {
-            
-            var fullName = driverInfo.Driver.FullName;
-            result.Add(Tuple.Create(fullName, driverInfo.RideCount));
-        }
-
-        return result;
+        return Task.FromResult<IList<Tuple<string, int>>>(result);
     }
 
-    public IList<DriverRideInfo> GetDriversRidesInfo()
+    public Task<IList<DriverRideInfo>> GetDriversRidesInfo()
     {
         
-        return _dailySchedules
+        var result = _dailySchedules
             .Where(ds => ds.Driver != null && ds.StartTime != null && ds.EndTime != null)
             .GroupBy(ds => ds.Driver!.Id)
             .Select(g =>
@@ -164,8 +160,9 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
                 };
             })
             .ToList();
+        return Task.FromResult<IList<DriverRideInfo>>(result);
     }
-    public IList<Vehicle> GetVehiclesWithMaxRides(DateTime start, DateTime end)
+    public Task<IList<Vehicle>> GetVehiclesWithMaxRides(DateTime start, DateTime end)
     {
         var periodSchedules = _dailySchedules
             .Where(ds =>
@@ -185,7 +182,7 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .ToList();
         
         if (!vehicleRideCounts.Any())
-            return new List<Vehicle>();
+            return Task.FromResult<IList<Vehicle>>(new List<Vehicle>());
 
         var maxRides = vehicleRideCounts.Max(x => x.RideCount);
         var maxVehicleIds = vehicleRideCounts
@@ -193,8 +190,9 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .Select(x => x.VehicleId)
             .ToList();
 
-        return _vehicles
+        var result = _vehicles
             .Where(v => maxVehicleIds.Contains(v.Id))
             .ToList();
+        return Task.FromResult<IList<Vehicle>>(result);
     }
 }

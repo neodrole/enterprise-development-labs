@@ -13,7 +13,7 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
     {
         _drivers = DataSeeder.Drivers;
     }
-    public bool Add(Driver entity)
+    public Task<Driver> Add(Driver entity)
     {
         try
         {
@@ -21,15 +21,15 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return Task.FromResult(entity);
     }
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var driver = Get(key);
+            var driver = await Get(key);
             if (driver != null)
             {
                 _drivers.Remove(driver);
@@ -41,19 +41,19 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
         }
         return true;
     }
-    public bool Update(Driver entity)
+    public async Task<Driver> Update(Driver entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return entity;
     }
-    public Driver? Get(int key) => _drivers.FirstOrDefault(d => d.Id == key);
-    public IList<Driver> GetAll() => _drivers;
+    public Task<Driver?> Get(int key) => Task.FromResult(_drivers.FirstOrDefault(d => d.Id == key));
+    public Task<IList<Driver>> GetAll() => Task.FromResult((IList<Driver>)_drivers);
 }

@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace DispatchService.Application.Contracts;
 public interface IVehicleService
 {
-    public string GetFullInfo(int key);
+    public Task<string> GetFullInfo(int key);
 }

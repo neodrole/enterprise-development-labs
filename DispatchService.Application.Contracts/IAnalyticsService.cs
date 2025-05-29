@@ -9,11 +9,11 @@ namespace DispatchService.Application.Contracts;
 public interface IAnalyticsService
 {
     
-    public IList<DriverDto> GetDriversByPeriod(DateTime start, DateTime end);
-    public Dictionary<string, TimeSpan> GetTotalTimeByTypeAndModel();
-    public IList<Tuple<string, int>> GetTop5DriversByRides();
-    public IList<DriverRideInfoDto> GetDriversRidesInfo();
-    public IList<VehicleDto> GetVehiclesWithMaxRides(DateTime start, DateTime end);
+    public Task<IList<DriverDto>> GetDriversByPeriod(DateTime start, DateTime end);
+    public Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel();
+    public Task<IList<Tuple<string, int>>> GetTop5DriversByRides();
+    public Task<IList<DriverRideInfoDto>> GetDriversRidesInfo();
+    public Task<IList<VehicleDto>> GetVehiclesWithMaxRides(DateTime start, DateTime end);
 }
 
 public record DriverRideInfoDto(string FullName, int RideCount, TimeSpan AverageDuration, TimeSpan MaxDuration);

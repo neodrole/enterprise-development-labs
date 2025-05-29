@@ -8,7 +8,9 @@ using DispatchService.Application.Contracts;
 using DispatchService.Application.Services;
 using DispatchService.Domain.Services;
 using DispatchService.Domain.Model;
-using DispatchService.Domain.Services.InMemory;
+using DispatchService.Infrastructure.EfCore.Services;
+using DispatchService.Infrastructure.EfCore;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,10 +33,10 @@ var mapperConfig = new MapperConfiguration(config => config.AddProfile(new AutoM
 IMapper? mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddSingleton<IRepository<Driver, int>, DriverInMemoryRepository>();
-builder.Services.AddSingleton<IRepository<VehicleModel, int>, VehicleModelInMemoryRepository>();
-builder.Services.AddSingleton<IVehicleRepository, VehicleInMemoryRepository>();
-builder.Services.AddSingleton<IDailyScheduleRepository, DailyScheduleInMemoryRepository>();
+builder.Services.AddTransient<IRepository<Driver, int>, DriverEfCoreRepository>();
+builder.Services.AddTransient<IRepository<VehicleModel, int>, VehicleModelEfCoreRepository>();
+builder.Services.AddTransient<IVehicleRepository, VehicleEfCoreRepository>();
+builder.Services.AddTransient<IDailyScheduleRepository, DailyScheduleEfCoreRepository>();
 
 builder.Services.AddScoped<ICrudService<DriverDto, DriverCreateUpdateDto, int>, DriverCrudService>();
 builder.Services.AddScoped<ICrudService<VehicleModelDto, VehicleModelCreateUpdateDto, int>, VehicleModelCrudService>();
@@ -42,6 +44,9 @@ builder.Services.AddScoped<ICrudService<VehicleDto, VehicleCreateUpdateDto, int>
 builder.Services.AddScoped<ICrudService<DailyScheduleDto, DailyScheduleCreateUpdateDto, int>, DailyScheduleCrudService>();
 builder.Services.AddScoped<IAnalyticsService, DailyScheduleCrudService>();
 builder.Services.AddScoped<IVehicleService, VehicleCrudService>();
+
+builder.Services.AddDbContextFactory<DispatchServiceDbContext>(options =>
+    options.UseLazyLoadingProxies().UseMySql(builder.Configuration.GetConnectionString("MySql"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySql"))));
 
 var app = builder.Build();
 

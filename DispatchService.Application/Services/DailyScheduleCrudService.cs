@@ -14,50 +14,46 @@ using System.Threading.Tasks;
 namespace DispatchService.Application.Services;
 public class DailyScheduleCrudService(IDailyScheduleRepository repository, IMapper mapper ) : ICrudService<DailyScheduleDto, DailyScheduleCreateUpdateDto, int>, IAnalyticsService
 {
-    public bool Create(DailyScheduleCreateUpdateDto newDto)
+    public async Task<DailyScheduleDto> Create(DailyScheduleCreateUpdateDto newDto)
     {
         var newDailySchedule = mapper.Map<DailySchedule>(newDto);
-        newDailySchedule.Id = repository.GetAll().Max(x => x.Id) + 1;
-        var result = repository.Add(newDailySchedule);
-        return result;
+        var res = await repository.Add(newDailySchedule);
+        return mapper.Map<DailyScheduleDto>(res);
     }
 
-    public bool Delete(int id) => repository.Delete(id);
+    public async Task<bool> Delete(int id) => await repository.Delete(id);
 
-    public DailyScheduleDto? GetById(int id)
+    public async Task<DailyScheduleDto?> GetById(int id)
     {
-        var dailySchedule = repository.Get(id);
+        var dailySchedule = await repository.Get(id);
         return mapper.Map<DailyScheduleDto>(dailySchedule);
     }
 
-    public IList<DailyScheduleDto> GetList() => mapper.Map<List<DailyScheduleDto>>(repository.GetAll());
+    public async Task<IList<DailyScheduleDto>> GetList() => mapper.Map<List<DailyScheduleDto>>(await repository.GetAll());
 
-    public bool Update(int key, DailyScheduleCreateUpdateDto newDto)
+    public async Task<DailyScheduleDto> Update(int key, DailyScheduleCreateUpdateDto newDto)
     {
-        var oldDailySchedule = repository.Get(key);
+        
         var newDailySchedule = mapper.Map<DailySchedule>(newDto);
-        newDailySchedule.Id = key;
-        // от старого расписания по идее больше ничего не нужно (?)
-        //хотя смотрю в образец и будто я делаю что-то не так, ну да ладно, едем дальше 
-        var result = repository.Update(newDailySchedule);
-        return result;
+        await repository.Update(newDailySchedule);
+        return mapper.Map<DailyScheduleDto>(newDailySchedule);
     }
 
-    public IList<DriverDto> GetDriversByPeriod(DateTime start, DateTime end)
+    public async Task<IList<DriverDto>> GetDriversByPeriod(DateTime start, DateTime end)
     {
-        var drivers = repository.GetDriversByPeriod(start, end);
+        var drivers = await repository.GetDriversByPeriod(start, end);
         return mapper.Map<List<DriverDto>>(drivers);
     }
-    public Dictionary<string, TimeSpan> GetTotalTimeByTypeAndModel() => repository.GetTotalTimeByTypeAndModel();
-    public IList<Tuple<string, int>> GetTop5DriversByRides() => repository.GetTop5DriversByRides();
-    public IList<DriverRideInfoDto> GetDriversRidesInfo()
+    public async Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel() => await repository.GetTotalTimeByTypeAndModel();
+    public async Task<IList<Tuple<string, int>>> GetTop5DriversByRides() => await repository.GetTop5DriversByRides();
+    public async Task<IList<DriverRideInfoDto>> GetDriversRidesInfo()
     {
-        var ridesInfo = repository.GetDriversRidesInfo();
+        var ridesInfo = await repository.GetDriversRidesInfo();
         return mapper.Map<List<DriverRideInfoDto>>(ridesInfo);
     }
-    public IList<VehicleDto> GetVehiclesWithMaxRides(DateTime start, DateTime end)
+    public async Task<IList<VehicleDto>> GetVehiclesWithMaxRides(DateTime start, DateTime end)
     {
-        var vehicles = repository.GetVehiclesWithMaxRides(start, end);
+        var vehicles = await repository.GetVehiclesWithMaxRides(start, end);
         return mapper.Map<List<VehicleDto>>(vehicles);
     }
 

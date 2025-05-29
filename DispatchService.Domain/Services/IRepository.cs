@@ -9,9 +9,9 @@ public interface IRepository<TEntity, TKey>
     where TEntity : class
     where TKey : struct
 {
-    public IList<TEntity> GetAll();
-    public TEntity? Get(TKey key);
-    public bool Add(TEntity entity);
-    public bool Update(TEntity entity);
-    public bool Delete(TKey key);
+    public Task<IList<TEntity>> GetAll();
+    public Task<TEntity?> Get(TKey key);
+    public Task<TEntity> Add(TEntity entity);
+    public Task<TEntity> Update(TEntity entity);
+    public Task<bool> Delete(TKey key);
 }

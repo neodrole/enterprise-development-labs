@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DispatchService.Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DispatchService.Server", "DispatchService.Server\DispatchService.Server.csproj", "{6D5FEB29-3CE7-4BE5-9931-CCB9CCA1FE31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DispatchService.Infrastructure.EfCore", "DispatchService.Infrastructure.EfCore\DispatchService.Infrastructure.EfCore.csproj", "{0D54B6B7-E4C1-494D-8B80-009C4C8D69B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{6D5FEB29-3CE7-4BE5-9931-CCB9CCA1FE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D5FEB29-3CE7-4BE5-9931-CCB9CCA1FE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D5FEB29-3CE7-4BE5-9931-CCB9CCA1FE31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D54B6B7-E4C1-494D-8B80-009C4C8D69B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D54B6B7-E4C1-494D-8B80-009C4C8D69B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D54B6B7-E4C1-494D-8B80-009C4C8D69B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D54B6B7-E4C1-494D-8B80-009C4C8D69B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

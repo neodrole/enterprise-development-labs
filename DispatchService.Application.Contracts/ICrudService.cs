@@ -11,9 +11,9 @@ public interface ICrudService<TDto, TCreateUpdateDto, TKey>
     where TCreateUpdateDto : class
     where TKey : struct
 {
-    public bool Create(TCreateUpdateDto newDto);
-    public bool Update(TKey key, TCreateUpdateDto newDto);
-    public bool Delete(TKey id);
-    public IList<TDto> GetList();
-    public TDto? GetById(TKey id);
+    public Task<TDto> Create(TCreateUpdateDto newDto);
+    public Task<TDto> Update(TKey key, TCreateUpdateDto newDto);
+    public Task<bool> Delete(TKey id);
+    public Task<IList<TDto>> GetList();
+    public Task<TDto?> GetById(TKey id);
 }

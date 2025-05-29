@@ -12,31 +12,29 @@ using System.Threading.Tasks;
 namespace DispatchService.Application.Services;
 public class VehicleCrudService(IVehicleRepository repository, IMapper mapper) : ICrudService<VehicleDto, VehicleCreateUpdateDto, int>, IVehicleService
 {
-    public bool Create(VehicleCreateUpdateDto newDto)
+    public async Task<VehicleDto> Create(VehicleCreateUpdateDto newDto)
     {
         var newVehicle = mapper.Map<Vehicle>(newDto);
-        newVehicle.Id = repository.GetAll().Max(x => x.Id) + 1;
-        var result = repository.Add(newVehicle);
-        return result;
+        newVehicle.Id = (await repository.GetAll()).Max(x => x.Id) + 1;
+        var result = await repository.Add(newVehicle);
+        return mapper.Map<VehicleDto>(result);
     }
 
-    public bool Delete (int id) => repository.Delete(id);
+    public async Task<bool> Delete (int id) => await repository.Delete(id);
 
-    public VehicleDto? GetById(int id)
+    public async Task<VehicleDto?> GetById(int id)
     {
-        var vehicle = repository.Get(id);
+        var vehicle = await repository.Get(id);
         return mapper.Map<VehicleDto>(vehicle);
     }
 
-    public IList<VehicleDto> GetList() =>mapper.Map<List<VehicleDto>>(repository.GetAll());
+    public async Task<IList<VehicleDto>> GetList() =>mapper.Map<List<VehicleDto>>(await repository.GetAll());
 
-    public bool Update(int key, VehicleCreateUpdateDto newDto)
+    public async Task<VehicleDto> Update(int key, VehicleCreateUpdateDto newDto)
     {
-        var oldVehicle = repository.Get(key);
         var newVehicle = mapper.Map<Vehicle>(newDto);
-        newVehicle.Id = key;
-        var result = repository.Update(newVehicle);
-        return result;
+        await repository.Update(newVehicle);
+        return mapper.Map<VehicleDto>(newVehicle);
     }
-    public string GetFullInfo(int key) => repository.GetFullInfo(key);
+    public async Task<string> GetFullInfo(int key) => await repository.GetFullInfo(key);
 }

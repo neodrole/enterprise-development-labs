@@ -6,7 +6,7 @@ using System.Text;
 public class VehicleRepositoryTests
 {
     [Fact]
-    public void GetFullInfo_Success()
+    public async Task GetFullInfo_Success()
     {
         // наверное нужно было не строку возвращать, иначе это бред какой-то.
 
@@ -21,7 +21,7 @@ public class VehicleRepositoryTests
             .AppendLine("Вместимость: 100 чел.")
             .ToString();
         var repo = new VehicleInMemoryRepository();
-        var result = repo.GetFullInfo(2);
+        var result = await repo.GetFullInfo(2);
         Assert.Equal(expected, result);
     }
 }
