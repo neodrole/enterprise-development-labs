@@ -17,7 +17,7 @@ public class VehicleInMemoryRepository : IVehicleRepository
         _vehicleModels = DataSeeder.VehicleModels;
     }
 
-    public bool Add(Vehicle entity)
+    public Task<Vehicle> Add(Vehicle entity)
     {
         try
         {
@@ -25,15 +25,15 @@ public class VehicleInMemoryRepository : IVehicleRepository
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return Task.FromResult(entity);
     } 
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var vehicle = Get(key);
+            var vehicle = await Get(key);
             if (vehicle != null)
             {
                 _vehicles.Remove(vehicle);
@@ -45,24 +45,24 @@ public class VehicleInMemoryRepository : IVehicleRepository
         }
         return true;
     }
-    public Vehicle? Get(int key) => _vehicles.FirstOrDefault( v=> v.Id == key);
-    public IList<Vehicle> GetAll() => _vehicles;
-    public bool Update(Vehicle entity)
+    public Task<Vehicle?> Get(int key) => Task.FromResult(_vehicles.FirstOrDefault( v=> v.Id == key));
+    public Task<IList<Vehicle>> GetAll() => Task.FromResult((IList<Vehicle>)_vehicles);
+    public async Task<Vehicle> Update(Vehicle entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return entity;
     }
-    public string GetFullInfo(int key)
+    public Task<string> GetFullInfo(int key)
     {
-        var v = Get(key);
+        var v = _vehicles.FirstOrDefault(vv => vv.Id == key);
         if (v != null)
         {
             var info = new StringBuilder();
@@ -83,10 +83,10 @@ public class VehicleInMemoryRepository : IVehicleRepository
             {
                 info.Append($"Информация о модели отсутствует{Environment.NewLine}");
             }
-            return info.ToString();
+            return Task.FromResult(info.ToString());
         }
         
-        return "Транспорт не найден";
+        return Task.FromResult("Транспорт не найден");
         
     }
 

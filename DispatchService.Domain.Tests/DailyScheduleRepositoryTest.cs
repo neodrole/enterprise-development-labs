@@ -8,27 +8,27 @@ namespace DispatchService.Domain.Tests;
 public class DailyScheduleRepositoryTest
 {
     [Fact]
-    public void GetDriversByPeriod_Success()
+    public async Task GetDriversByPeriod_Success()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetDriversByPeriod(new DateTime(2025, 5, 20), new DateTime(2025, 5, 25));
+        var result = await repo.GetDriversByPeriod(new DateTime(2025, 5, 20), new DateTime(2025, 5, 25));
         Assert.Equal(2, result.Count());
         Assert.Equal("Иванов Иван Иванович", result[0].FullName);
         Assert.Equal("Федоров Иван Васильевич", result[1].FullName);
     }
     [Fact]
-    public void GetDriversByPeriod_NoDrivers() 
+    public async Task GetDriversByPeriod_NoDrivers() 
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetDriversByPeriod(new DateTime(2024, 5, 20), new DateTime(2024, 5, 25));
+        var result = await repo.GetDriversByPeriod(new DateTime(2024, 5, 20), new DateTime(2024, 5, 25));
         Assert.Empty(result);
     }
 
     [Fact]
-    public void GetTotalTimeByTypeAndModel_Success()
+    public async Task GetTotalTimeByTypeAndModel_Success()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetTotalTimeByTypeAndModel();
+        var result = await repo.GetTotalTimeByTypeAndModel();
         
         var busTime = result["Автобус: ЛиАЗ 4292"];
         Assert.Equal(new TimeSpan(6, 0, 0), busTime);
@@ -37,10 +37,10 @@ public class DailyScheduleRepositoryTest
     }
 
     [Fact]
-    public void GetTop5DriversByRides_Success()
+    public async Task GetTop5DriversByRides_Success()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetTop5DriversByRides();
+        var result = await repo.GetTop5DriversByRides();
 
         Assert.Equal(5, result.Count);
 
@@ -50,10 +50,10 @@ public class DailyScheduleRepositoryTest
     }
 
     [Fact]
-    public void GetDriversRidesInfo_Success()
+    public async Task GetDriversRidesInfo_Success()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetDriversRidesInfo();
+        var result = await repo.GetDriversRidesInfo();
 
         Assert.Equal(6, result.Count);
 
@@ -69,19 +69,19 @@ public class DailyScheduleRepositoryTest
     }
 
     [Fact]
-    public void GetVehiclesWithMaxRides_Success()
+    public async Task GetVehiclesWithMaxRides_Success()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetVehiclesWithMaxRides(new DateTime(2025, 5, 1), new DateTime(2025, 5, 31));
+        var result = await repo.GetVehiclesWithMaxRides(new DateTime(2025, 5, 1), new DateTime(2025, 5, 31));
 
         Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public void GetVehiclesWithMaxRides_NoVehicles()
+    public async Task GetVehiclesWithMaxRides_NoVehicles()
     {
         var repo = new DailyScheduleInMemoryRepository();
-        var result = repo.GetVehiclesWithMaxRides(new DateTime(2024, 5, 1), new DateTime(2024, 5, 31));
+        var result = await repo.GetVehiclesWithMaxRides(new DateTime(2024, 5, 1), new DateTime(2024, 5, 31));
 
         Assert.Empty(result);
     }

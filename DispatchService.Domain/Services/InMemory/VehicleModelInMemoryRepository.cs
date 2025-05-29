@@ -13,7 +13,7 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
     {
         _vehicleModels = DataSeeder.VehicleModels;
     }
-    public bool Add(VehicleModel entity)
+    public Task<VehicleModel> Add(VehicleModel entity)
     {
         try
         {
@@ -21,15 +21,15 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return Task.FromResult(entity);
     }
-    public bool Delete(int key)
+    public async Task<bool> Delete(int key)
     {
         try
         {
-            var vehicleModel = Get(key);
+            var vehicleModel = await Get(key);
             if (vehicleModel != null)
             {
                 _vehicleModels.Remove(vehicleModel);
@@ -41,19 +41,19 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
         }
         return true;
     }
-    public bool Update(VehicleModel entity)
+    public async Task<VehicleModel> Update(VehicleModel entity)
     {
         try
         {
-            Delete(entity.Id);
-            Add(entity);
+            await Delete(entity.Id);
+            await Add(entity);
         }
         catch
         {
-            return false;
+            return null;
         }
-        return true;
+        return entity;
     }
-    public VehicleModel? Get(int key) => _vehicleModels.FirstOrDefault(v => v.Id == key);
-    public IList<VehicleModel> GetAll() => _vehicleModels;
+    public Task<VehicleModel?> Get(int key) => Task.FromResult(_vehicleModels.FirstOrDefault(v => v.Id == key));
+    public Task<IList<VehicleModel>> GetAll() => Task.FromResult((IList<VehicleModel>)_vehicleModels);
 }
