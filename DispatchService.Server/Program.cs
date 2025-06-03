@@ -15,19 +15,10 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); /* ладно, у меня все равно ничего не написано.
-    options =>
-{
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(VehicleDto).Assembly.GetName().Name}.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(VehicleModelDto).Assembly.GetName().Name}.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DriverDto).Assembly.GetName().Name}.xml"));
-}); */
+builder.Services.AddSwaggerGen(); 
 
 var mapperConfig = new MapperConfiguration(config => config.AddProfile(new AutoMapperProfile()));
 IMapper? mapper = mapperConfig.CreateMapper();
@@ -50,7 +41,6 @@ builder.Services.AddDbContextFactory<DispatchServiceDbContext>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

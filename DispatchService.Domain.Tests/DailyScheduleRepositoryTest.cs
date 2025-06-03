@@ -4,9 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DispatchService.Domain.Services.InMemory;
+
 namespace DispatchService.Domain.Tests;
+
+/// <summary>
+///  Класс с юнит-тестами репозитория с ежедневными графиками
+/// </summary>
 public class DailyScheduleRepositoryTest
 {
+    /// <summary>
+    /// Непараметрический тест метода, выводящего всех водителей, совершивших поездки за заданный период, упорядоченных по ФИО
+    /// </summary>
     [Fact]
     public async Task GetDriversByPeriod_Success()
     {
@@ -16,6 +24,10 @@ public class DailyScheduleRepositoryTest
         Assert.Equal("Иванов Иван Иванович", result[0].FullName);
         Assert.Equal("Федоров Иван Васильевич", result[1].FullName);
     }
+
+    /// <summary>
+    /// Непараметрический тест метода, выводящего всех водителей, совершивших поездки за заданный период, упорядоченных по ФИО
+    /// </summary>
     [Fact]
     public async Task GetDriversByPeriod_NoDrivers() 
     {
@@ -24,6 +36,9 @@ public class DailyScheduleRepositoryTest
         Assert.Empty(result);
     }
 
+    /// <summary>
+    /// Непараметрический тест метода для вывода суммарного времени поездок транспортного средства каждого типа и модели
+    /// </summary>
     [Fact]
     public async Task GetTotalTimeByTypeAndModel_Success()
     {
@@ -36,6 +51,9 @@ public class DailyScheduleRepositoryTest
         Assert.Equal(new TimeSpan(20, 0, 0), trolleybusTime); // 20 часов т.к. 2 троллейбусы одной модели, сперва не понял почему не 16
     }
 
+    /// <summary>
+    /// Непараметрический тест метода для вывода топ-5 водителей по совершенному количеству поездок
+    /// </summary>
     [Fact]
     public async Task GetTop5DriversByRides_Success()
     {
@@ -49,6 +67,9 @@ public class DailyScheduleRepositoryTest
         Assert.Contains(Tuple.Create("Иванов Константин Николаевич", 2), result);
     }
 
+    /// <summary>
+    /// Непараметрический тест метода для вывода информации о количестве поездок, среднем времени и максимальном времени поездки для каждого водителя
+    /// </summary>
     [Fact]
     public async Task GetDriversRidesInfo_Success()
     {
@@ -68,6 +89,9 @@ public class DailyScheduleRepositoryTest
         Assert.Equal(new TimeSpan(8, 0, 0), driver3.MaxDuration);
     }
 
+    /// <summary>
+    /// Непараметрический тест метода для вывода информации о транспортных средствах, совершивших максимальное число поездок за указанный период
+    /// </summary>
     [Fact]
     public async Task GetVehiclesWithMaxRides_Success()
     {
@@ -77,6 +101,9 @@ public class DailyScheduleRepositoryTest
         Assert.Equal(2, result.Count);
     }
 
+    /// <summary>
+    /// Непараметрический тест метода для вывода информации о транспортных средствах, совершивших максимальное число поездок за указанный период
+    /// </summary>
     [Fact]
     public async Task GetVehiclesWithMaxRides_NoVehicles()
     {

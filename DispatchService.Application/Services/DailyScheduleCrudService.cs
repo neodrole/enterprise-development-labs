@@ -12,6 +12,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DispatchService.Application.Services;
+
+/// <summary>
+/// Служба слоя приложения для манипуляции над ежедневными графиками
+/// </summary>
+/// <param name="repository">Доменная служба для ежедневных графиков</param>
+/// <param name="mapper">Автомаппер</param>
 public class DailyScheduleCrudService(IDailyScheduleRepository repository, IMapper mapper ) : ICrudService<DailyScheduleDto, DailyScheduleCreateUpdateDto, int>, IAnalyticsService
 {
     public async Task<DailyScheduleDto> Create(DailyScheduleCreateUpdateDto newDto)
