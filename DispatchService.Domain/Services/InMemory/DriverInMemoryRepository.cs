@@ -5,15 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using DispatchService.Domain.Data;
 using DispatchService.Domain.Model;
+
 namespace DispatchService.Domain.Services.InMemory;
+
+/// <summary>
+/// Имплементация репозитория для водителей, которая хранит коллекцию в оперативной памяти 
+/// </summary>
 public class DriverInMemoryRepository : IRepository<Driver, int>
 {
     private List<Driver> _drivers;
+
+    /// <summary>
+    /// Конструктор репозитория
+    /// </summary>
     public DriverInMemoryRepository()
     {
         _drivers = DataSeeder.Drivers;
     }
-    public Task<Driver> Add(Driver entity)
+
+    /// <inheritdoc/>
+    public Task<Driver?> Add(Driver entity)
     {
         try
         {
@@ -21,10 +32,12 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
         }
         catch
         {
-            return null;
+            return Task.FromResult<Driver?>(null); ;
         }
-        return Task.FromResult(entity);
+        return Task.FromResult<Driver?>(entity);
     }
+
+    /// <inheritdoc/>
     public async Task<bool> Delete(int key)
     {
         try
@@ -41,7 +54,9 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
         }
         return true;
     }
-    public async Task<Driver> Update(Driver entity)
+
+    /// <inheritdoc/>
+    public async Task<Driver?> Update(Driver entity)
     {
         try
         {
@@ -54,6 +69,10 @@ public class DriverInMemoryRepository : IRepository<Driver, int>
         }
         return entity;
     }
+
+    /// <inheritdoc/>
     public Task<Driver?> Get(int key) => Task.FromResult(_drivers.FirstOrDefault(d => d.Id == key));
+
+    /// <inheritdoc/>
     public Task<IList<Driver>> GetAll() => Task.FromResult((IList<Driver>)_drivers);
 }

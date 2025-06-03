@@ -4,16 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DispatchService.Domain.Model;
+
 namespace DispatchService.Domain.Data;
+
+/// <summary>
+/// Класс для заполнения коллекций данными
+/// </summary>
 public static class DataSeeder
 {
+    /// <summary>
+    /// Коллекция транспорта, использующаяся для первичного наполнения базы данных (и инмемори репозиториев)
+    /// </summary>
     public static readonly List<Vehicle> Vehicles =
         [
             new()
             {
                 Id = 1,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Bus,
+                VehicleType = VehicleTypes.Bus,
                 VehicleModelId = 1,
                 YearOfManufacture = 2020,
             },
@@ -21,7 +29,7 @@ public static class DataSeeder
             {
                 Id = 2,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Trolleybus,
+                VehicleType = VehicleTypes.Trolleybus,
                 VehicleModelId = 3,
                 YearOfManufacture = 2022,
             },
@@ -29,7 +37,7 @@ public static class DataSeeder
             {
                 Id = 3,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Tram,
+                VehicleType = VehicleTypes.Tram,
                 VehicleModelId = 4,
                 YearOfManufacture = 2021,
             },
@@ -37,7 +45,7 @@ public static class DataSeeder
             {
                 Id = 4,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Bus,
+                VehicleType = VehicleTypes.Bus,
                 VehicleModelId = 2,
                 YearOfManufacture = 2023,
             },
@@ -45,7 +53,7 @@ public static class DataSeeder
             {
                 Id = 5,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Trolleybus,
+                VehicleType = VehicleTypes.Trolleybus,
                 VehicleModelId = 3,
                 YearOfManufacture = 2024,
             },
@@ -53,12 +61,15 @@ public static class DataSeeder
             {
                 Id = 6,
                 LicensePlate = "A123AA63",
-                VehicleType = Vehicle.VehicleTypes.Tram,
+                VehicleType = VehicleTypes.Tram,
                 VehicleModelId = 5,
                 YearOfManufacture = 2021,
             },
 
         ];
+    /// <summary>
+    /// Коллекция моделей транспорта, использующаяся для первичного наполнения базы данных (и инмемори репозиториев)
+    /// </summary>
     public static readonly List<VehicleModel> VehicleModels =
         [
             new()
@@ -105,6 +116,9 @@ public static class DataSeeder
             },
             
         ];
+    /// <summary>
+    /// Коллекция водителей, использующаяся для первичного наполнения базы данных (и инмемори репозиториев)
+    /// </summary>
     public static readonly List<Driver> Drivers =
         [
             new()
@@ -174,6 +188,9 @@ public static class DataSeeder
                 Phone = "+74950198687",
             },
         ];
+    /// <summary>
+    /// Коллекция графиков, использующаяся для первичного наполнения базы данных (и инмемори репозиториев)
+    /// </summary>
     public static readonly List<DailySchedule> DailySchedules =
         [
             new()

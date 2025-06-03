@@ -3,6 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DispatchService.Server.Controllers;
+
+/// <summary>
+/// Базовый контроллер для CRUD-операций над сущностями
+/// </summary>
+/// <typeparam name="TDto">Dto для просмотра сущности</typeparam>
+/// <typeparam name="TCreateUpdateDto">Dto для апдейта сущности</typeparam>
+/// <typeparam name="TKey">Тип праймари ключа сущности</typeparam>
+/// <param name="crudService">Служба, имплементирующая дженерик интерфейс ICrudService</param>
 [Route("api/[controller]")]
 [ApiController]
 public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudService<TDto, TCreateUpdateDto, TKey> crudService) : ControllerBase
@@ -10,6 +18,10 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
     where TCreateUpdateDto : class
     where TKey : struct
 {
+    /// <summary>
+    /// Добавление новой записи
+    /// </summary>
+    /// <param name="newDto">Новые данные</param>
     [HttpPost]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -27,6 +39,11 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
         }
     }
 
+    /// <summary>
+    /// Изменение имеющихся данных
+    /// </summary>
+    /// <param name="id">Идентификатор</param>
+    /// <param name="newDto">Измененные данные</param>
     [HttpPut("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -44,6 +61,10 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
         }
     }
 
+    /// <summary>
+    /// Удаление данных
+    /// </summary>
+    /// <param name="id">Идентификатор</param>
     [HttpDelete("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]
@@ -61,6 +82,10 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
         }
     }
 
+    /// <summary>
+    /// Получение списка всех данных
+    /// </summary>
+    /// <returns>Список всех данных</returns>
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
@@ -77,6 +102,11 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(ICrudServ
         }
     }
 
+    /// <summary>
+    /// Получение данных по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор</param>
+    /// <returns>Данные</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]

@@ -10,6 +10,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DispatchService.Application.Services;
+
+/// <summary>
+/// Служба слоя приложения для манипуляции над водителями
+/// </summary>
+/// <param name="repository">Доменная служба для ежедневных графиков</param>
+/// <param name="mapper">Автомаппер</param>
 public class DriverCrudService(IRepository<Driver, int> repository, IMapper mapper) : ICrudService<DriverDto, DriverCreateUpdateDto, int>
 {
     public async Task<DriverDto> Create(DriverCreateUpdateDto newDto)

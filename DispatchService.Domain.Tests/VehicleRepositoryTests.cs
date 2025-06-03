@@ -1,14 +1,20 @@
-﻿namespace DispatchService.Domain.Tests;
-using DispatchService.Domain.Services.InMemory;
+﻿using DispatchService.Domain.Services.InMemory;
 using System.Numerics;
 using System.Text;
 
+namespace DispatchService.Domain.Tests;
+
+/// <summary>
+///  Класс с юнит-тестами репозитория с транспортными средствами
+/// </summary>
 public class VehicleRepositoryTests
 {
+    /// <summary>
+    /// Непараметрический тест метода, выводящего информацию о транспортном средстве
+    /// </summary>
     [Fact]
     public async Task GetFullInfo_Success()
     {
-        // наверное нужно было не строку возвращать, иначе это бред какой-то.
 
         var expected = new StringBuilder()
             .AppendLine("ID: 2")

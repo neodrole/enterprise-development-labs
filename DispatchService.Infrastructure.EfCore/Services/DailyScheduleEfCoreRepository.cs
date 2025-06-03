@@ -12,7 +12,7 @@ namespace DispatchService.Infrastructure.EfCore.Services;
 public class DailyScheduleEfCoreRepository(DispatchServiceDbContext context) : IDailyScheduleRepository
 {
     private readonly DbSet<DailySchedule> _dailySchedules = context.DailySchedules;
-    public async Task<DailySchedule> Add(DailySchedule entity)
+    public async Task<DailySchedule?> Add(DailySchedule entity)
     {
         var result = await _dailySchedules.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -29,13 +29,13 @@ public class DailyScheduleEfCoreRepository(DispatchServiceDbContext context) : I
         return true;
     }
 
-    public async Task<DailySchedule>? Get(int key) =>
+    public async Task<DailySchedule?> Get(int key) =>
         await _dailySchedules.FirstOrDefaultAsync(e => e.Id == key);
 
     public async Task<IList<DailySchedule>> GetAll() =>
         await _dailySchedules.ToListAsync();
 
-    public async Task<DailySchedule> Update(DailySchedule entity)
+    public async Task<DailySchedule?> Update(DailySchedule entity)
     {
         _dailySchedules.Update(entity);
         await context.SaveChangesAsync();
@@ -51,33 +51,16 @@ public class DailyScheduleEfCoreRepository(DispatchServiceDbContext context) : I
                 ds.EndTime != null &&
                 ds.StartTime >= start &&
                 ds.EndTime <= end)
-            .Select(ds => ds.Driver)
+            .Select(ds => ds.Driver!)
             .Distinct()
             .ToListAsync();
     }
-/*
-Taa
-⣿⣿⣿⣿⣿⣿⣿⠿⠿⢛⣋⣙⣋⣩⣭⣭⣭⣭⣍⣉⡛⠻⢿⣿⣿⣿⣿ 
-⣿⣿⣿⠟⣋⣥⣴⣾⣿⣿⣿⡆⣿⣿⣿⣿⣿⣿⡿⠟⠛⠗⢦⡙⢿⣿⣿ 
-⣿⡟⡡⠾⠛⠻⢿⣿⣿⣿⡿⠃⣿⡿⣿⠿⠛⠉⠠⠴⢶⡜⣦⡀⡈⢿⣿ 
-⡿⢀⣰⡏⣼⠋⠁⢲⡌⢤⣠⣾⣷⡄⢄⠠⡶⣾⡀⠀⣸⡷⢸⡷⢹⠈⣿ 
-⡇⢘⢿⣇⢻⣤⣠⡼⢃⣤⣾⣿⣿⣿⢌⣷⣅⡘⠻⠿⢛⣡⣿⠀⣾⢠⣿ 
-⣷⠸⣮⣿⣷⣨⣥⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢁⡼⠃⣼⣿ 
-⣿⡆⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢃⡞⣱⠆⣿⣿ 
-⣿⣿⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⣼⢸⡿⢸⣿⣿ 
-⣿⣿⡇⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢿⡌⠃⣿⣿⣿ 
-⣿⣿⣿⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢋⣿⠙⣷⢸⣷⠀⣿⣿⣿ 
-⣿⣿⣿⡇⢻⣿⣿⣿⡿⠿⢿⣿⣿⣿⠟⠋⣡⡈⠻⣇⢹⣿⣿⢠⣿⣿⣿ 
-⣿⣿⣿⣿⠘⣿⣿⣿⣿⣯⣽⣉⣿⣟⣛⠷⠙⢿⣷⣌⠀⢿⡇⣼⣿⣿⣿ 
-⣿⣿⣿⡿⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⡙⢿⢗⣀⣁⠈⢻⣿⣿ 
-⣿⡿⢋⣴⣿⣎⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡉⣯⣿⣷⠆⠙⢿ 
-⣏⠀⠈⠧⠡⠉⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠉⢉⣁⣀⣀⣾
-*/
+    
     public async Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel()
     {
         var schedules = await _dailySchedules
             .Where(ds => ds.StartTime != null && ds.EndTime != null)
-            .Include(ds => ds.Vehicle) // Загружаем связанное ТС
+            .Include(ds => ds.Vehicle)
             .AsNoTracking()
             .ToListAsync();
 
@@ -91,8 +74,8 @@ Taa
             .Where(ds => ds.Vehicle != null && ds.Vehicle.VehicleModelId.HasValue)
             .GroupBy(ds => new
             {
-                VehicleType = ds.Vehicle.VehicleType,
-                ModelId = ds.Vehicle.VehicleModelId.Value
+                VehicleType = ds.Vehicle!.VehicleType,
+                ModelId = ds.Vehicle!.VehicleModelId!.Value
             })
             .Select(g =>
             {
@@ -116,15 +99,15 @@ Taa
             })
             .ToList();
 
-        var vehicleTypeNames = new Dictionary<Vehicle.VehicleTypes, string>
+        var vehicleTypeNames = new Dictionary<VehicleTypes, string>
     {
-        { Vehicle.VehicleTypes.Bus, "Автобус" },
-        { Vehicle.VehicleTypes.Trolleybus, "Троллейбус" },
-        { Vehicle.VehicleTypes.Tram, "Трамвай" }
+        { VehicleTypes.Bus, "Автобус" },
+        { VehicleTypes.Trolleybus, "Троллейбус" },
+        { VehicleTypes.Tram, "Трамвай" }
     };
 
         return result.ToDictionary(
-            x => $"{vehicleTypeNames.GetValueOrDefault(x.Key.VehicleType ?? Vehicle.VehicleTypes.Bus, "не указан")}: {x.Key.ModelName}",
+            x => $"{vehicleTypeNames.GetValueOrDefault(x.Key.VehicleType ?? VehicleTypes.Bus, "не указан")}: {x.Key.ModelName}",
             x => TimeSpan.FromMinutes(x.TotalMinutes)
         );
     }
@@ -134,7 +117,7 @@ Taa
         var query = _dailySchedules
             .Where(ds => ds.Driver != null)
             .GroupBy(ds => new {
-                ds.Driver.Id,
+                ds.Driver!.Id,
                 ds.Driver.LastName,
                 ds.Driver.FirstName,
                 ds.Driver.Patronymic
@@ -168,7 +151,7 @@ Taa
                 ds.EndTime != null)
             .Select(ds => new
             {
-                DriverId = ds.Driver.Id,
+                DriverId = ds.Driver!.Id,
                 ds.Driver.LastName,
                 ds.Driver.FirstName,
                 ds.Driver.Patronymic,
@@ -190,7 +173,7 @@ Taa
             {
                 var durations = g
                     .Where(x => x.EndTime > x.StartTime)
-                    .Select(x => (x.EndTime - x.StartTime).Value)
+                    .Select(x => x.EndTime!.Value - x.StartTime!.Value)
                     .ToList();
 
                 return new DriverRideInfo

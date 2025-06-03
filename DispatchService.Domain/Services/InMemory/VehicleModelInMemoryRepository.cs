@@ -5,15 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using DispatchService.Domain.Data;
 using DispatchService.Domain.Model;
+
 namespace DispatchService.Domain.Services.InMemory;
+
+/// <summary>
+/// Имплементация репозитория для моделей транспортных средств, которая хранит коллекцию в оперативной памяти 
+/// </summary>
 public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
 {
     private List<VehicleModel> _vehicleModels;
+
+    /// <summary>
+    /// Конструктор репозитория
+    /// </summary>
     public VehicleModelInMemoryRepository()
     {
         _vehicleModels = DataSeeder.VehicleModels;
     }
-    public Task<VehicleModel> Add(VehicleModel entity)
+
+    /// <inheritdoc/>
+    public Task<VehicleModel?> Add(VehicleModel entity)
     {
         try
         {
@@ -21,10 +32,12 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
         }
         catch
         {
-            return null;
+            return Task.FromResult<VehicleModel?>(null);
         }
-        return Task.FromResult(entity);
+        return Task.FromResult<VehicleModel?>(entity);
     }
+
+    /// <inheritdoc/>
     public async Task<bool> Delete(int key)
     {
         try
@@ -41,7 +54,9 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
         }
         return true;
     }
-    public async Task<VehicleModel> Update(VehicleModel entity)
+
+    /// <inheritdoc/>
+    public async Task<VehicleModel?> Update(VehicleModel entity)
     {
         try
         {
@@ -54,6 +69,10 @@ public class VehicleModelInMemoryRepository : IRepository<VehicleModel, int>
         }
         return entity;
     }
+
+    /// <inheritdoc/>
     public Task<VehicleModel?> Get(int key) => Task.FromResult(_vehicleModels.FirstOrDefault(v => v.Id == key));
+
+    /// <inheritdoc/>
     public Task<IList<VehicleModel>> GetAll() => Task.FromResult((IList<VehicleModel>)_vehicleModels);
 }

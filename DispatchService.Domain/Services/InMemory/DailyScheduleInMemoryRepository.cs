@@ -7,12 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DispatchService.Domain.Services.InMemory;
+
+/// <summary>
+/// Имплементация репозитория для ежедневных графиков, которая хранит коллекцию в оперативной памяти 
+/// </summary>
 public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
 {
     private List<DailySchedule> _dailySchedules;
     private List<VehicleModel> _vehicleModels;
     private List<Vehicle> _vehicles;
     private List<Driver> _drivers;
+
+    /// <summary>
+    /// Конструктор репозитория
+    /// </summary>
     public DailyScheduleInMemoryRepository()
     {
         _dailySchedules = DataSeeder.DailySchedules;
@@ -26,7 +34,9 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             ds.Vehicle = _vehicles.FirstOrDefault(a => a.Id == ds.VehicleId);
         }
     }
-    public Task<DailySchedule> Add(DailySchedule entity)
+
+    /// <inheritdoc/>
+    public Task<DailySchedule?> Add(DailySchedule entity)
     {
         try
         {
@@ -34,10 +44,12 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         }
         catch
         {
-            return null;
+            return Task.FromResult<DailySchedule?>(null);
         }
-        return Task.FromResult(entity);
+        return Task.FromResult<DailySchedule?>(entity);
     }
+
+    /// <inheritdoc/>
     public async Task<bool> Delete(int key)
     {
         try
@@ -54,7 +66,9 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         }
         return true;
     }
-    public async Task<DailySchedule> Update(DailySchedule entity)
+
+    /// <inheritdoc/>
+    public async Task<DailySchedule?> Update(DailySchedule entity)
     {
         try
         {
@@ -67,8 +81,14 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         }
         return entity;
     }
+
+    /// <inheritdoc/>
     public Task<DailySchedule?> Get(int key) => Task.FromResult(_dailySchedules.FirstOrDefault(d => d.Id == key));
+
+    /// <inheritdoc/>
     public Task<IList<DailySchedule>> GetAll() => Task.FromResult((IList<DailySchedule>)_dailySchedules);
+
+    /// <inheritdoc/>
     public Task<IList<Driver>> GetDriversByPeriod(DateTime start, DateTime end)
     {
         var result = _dailySchedules
@@ -84,6 +104,8 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .ToList();
         return Task.FromResult<IList<Driver>>(result);
     }
+
+    /// <inheritdoc/>
     public Task<Dictionary<string, TimeSpan>> GetTotalTimeByTypeAndModel()
     {
         var totalTime = new Dictionary<string, TimeSpan>();
@@ -111,6 +133,8 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
         return Task.FromResult(totalTime);
 
     }
+
+    /// <inheritdoc/>
     public Task<IList<Tuple<string, int>>> GetTop5DriversByRides()
     {
         var driverRideCounts = _dailySchedules
@@ -120,7 +144,7 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             {
                 DriverId = g.Key,
                 RideCount = g.Count(),
-                Driver = g.First().Driver
+                Driver = g.First().Driver!
             })
             .ToList();
 
@@ -132,12 +156,13 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
 
         
         var result = topDrivers
-            .Select(d => Tuple.Create(d.Driver.FullName, d.RideCount))
+            .Select(d => Tuple.Create(d.Driver.FullName ?? string.Empty, d.RideCount))
             .ToList();
 
         return Task.FromResult<IList<Tuple<string, int>>>(result);
     }
 
+    /// <inheritdoc/>
     public Task<IList<DriverRideInfo>> GetDriversRidesInfo()
     {
         
@@ -151,7 +176,7 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
 
                 return new DriverRideInfo
                 {
-                    FullName = driver.FullName,
+                    FullName = driver.FullName ?? string.Empty,
                     RideCount = durations.Count,
                     AverageDuration = TimeSpan.FromMinutes(
                         durations.Average(ts => ts.TotalMinutes) 
@@ -162,6 +187,8 @@ public class DailyScheduleInMemoryRepository : IDailyScheduleRepository
             .ToList();
         return Task.FromResult<IList<DriverRideInfo>>(result);
     }
+
+    /// <inheritdoc/>
     public Task<IList<Vehicle>> GetVehiclesWithMaxRides(DateTime start, DateTime end)
     {
         var periodSchedules = _dailySchedules

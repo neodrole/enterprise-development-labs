@@ -13,7 +13,7 @@ public class DriverEfCoreRepository(DispatchServiceDbContext context) : IReposit
 {
     private readonly DbSet<Driver> _drivers = context.Drivers;
 
-    public async Task<Driver> Add (Driver entity)
+    public async Task<Driver?> Add (Driver entity)
     {
         var result = await _drivers.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -30,13 +30,13 @@ public class DriverEfCoreRepository(DispatchServiceDbContext context) : IReposit
         return true;
     }
 
-    public async Task<Driver>? Get(int key) =>
+    public async Task<Driver?> Get(int key) =>
         await _drivers.FirstOrDefaultAsync(e => e.Id == key);
 
     public async Task<IList<Driver>> GetAll() =>
         await _drivers.ToListAsync();
 
-    public async Task<Driver> Update(Driver entity)
+    public async Task<Driver?> Update(Driver entity)
     {
         _drivers.Update(entity);
         await context.SaveChangesAsync();

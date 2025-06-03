@@ -13,7 +13,7 @@ public class VehicleEfCoreRepository(DispatchServiceDbContext context) : IVehicl
 {
     private readonly DbSet<Vehicle> _vehicles = context.Vehicles;
 
-    public async Task<Vehicle> Add(Vehicle entity)
+    public async Task<Vehicle?> Add(Vehicle entity)
     {
         var result = await _vehicles.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -30,13 +30,13 @@ public class VehicleEfCoreRepository(DispatchServiceDbContext context) : IVehicl
         return true;
     }
 
-    public async Task<Vehicle>? Get(int key) =>
+    public async Task<Vehicle?> Get(int key) =>
         await _vehicles.FirstOrDefaultAsync(e => e.Id == key);
 
     public async Task<IList<Vehicle>> GetAll() =>
         await _vehicles.ToListAsync();
 
-    public async Task<Vehicle> Update(Vehicle entity)
+    public async Task<Vehicle?> Update(Vehicle entity)
     {
         _vehicles.Update(entity);
         await context.SaveChangesAsync();
